@@ -1,0 +1,14 @@
+{
+  "tasks": {
+    "start": "deno run --allow-net --allow-env index.tsx"
+  },
+  "imports": {
+    "hono": "npm:hono",
+    "hono/": "npm:hono/"
+  },
+  "compilerOptions": {
+    "allowJs": true,
+    "lib": ["deno.window", "deno.ns"],
+    "strict": true
+  }
+}
