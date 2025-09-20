@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Header } from "./components/Header";
+import { MainLayout } from "./components/MainLayout";
+import { AdminLayout } from "./components/AdminLayout";
 import { CartSidebar } from "./components/CartSidebar";
 import { AuthModal } from "./components/AuthModal";
 import { CheckoutModal } from "./components/CheckoutModal";
@@ -8,7 +9,10 @@ import { HomePage } from "./pages/HomePage";
 import { ProductDetailsPage } from "./pages/ProductDetailsPage";
 import { AllProducts } from "./pages/AllProducts";
 import { CategoryPage } from "./pages/CategoryPage";
-import AdminPage from "./pages/AdminPage";
+import AdminDash from "./pages/AdminDashBoard";
+import { OrdersPage } from "./pages/OrdersPage";
+import { ProductsAdminPage } from "./pages/ProductsAdminPage";
+import { CustomersPage } from "./pages/CustomersPage";
 import AdminRoute from "./components/AdminRoute";
 import { toast } from "sonner";
 import { supabase } from "./utils/supabase/client";
@@ -354,68 +358,77 @@ function App() {
   return (
     <Router>
       <div className="min-h-screen bg-background">
-        <Header
-          cartItemCount={cartItemCount}
-          user={user}
-          onCartClick={() => setIsCartOpen(true)}
-          onAuthClick={() => setIsAuthOpen(true)}
-          onLogout={handleLogout}
-        />
-
         <Routes>
           <Route
             path="/"
             element={
-              <HomePage
-                products={products}
-                onAddToCart={handleAddToCart}
-                loading={{
-                  products: loading.products,
-                  cart: loading.cart,
-                }}
-                carouselApi={carouselApi}
-                setCarouselApi={setCarouselApi}
+              <MainLayout
+                cartItemCount={cartItemCount}
+                user={user}
+                onCartClick={() => setIsCartOpen(true)}
+                onAuthClick={() => setIsAuthOpen(true)}
+                onLogout={handleLogout}
               />
             }
-          />
-          <Route
-            path="/product/:id"
-            element={
-              <ProductDetailsPage
-                onAddToCart={handleAddToCart}
-                isLoading={loading.cart}
-              />
-            }
-          />
-          <Route
-            path="/category/:category"
-            element={
-              <CategoryPage
-                onAddToCart={handleAddToCart}
-                isLoading={loading.cart}
-              />
-            }
-          />
-          <Route
-            path="/allproducts"
-            element={<AllProducts 
-              products={products}
-              onAddToCart={handleAddToCart}
-              isLoading={loading.cart} />}
-          />
+          >
+            <Route
+              index
+              element={
+                <HomePage
+                  products={products}
+                  onAddToCart={handleAddToCart}
+                  loading={{
+                    products: loading.products,
+                    cart: loading.cart,
+                  }}
+                  carouselApi={carouselApi}
+                  setCarouselApi={setCarouselApi}
+                />
+              }
+            />
+            <Route
+              path="product/:id"
+              element={
+                <ProductDetailsPage
+                  onAddToCart={handleAddToCart}
+                  isLoading={loading.cart}
+                />
+              }
+            />
+            <Route
+              path="category/:category"
+              element={
+                <CategoryPage
+                  onAddToCart={handleAddToCart}
+                  isLoading={loading.cart}
+                />
+              }
+            />
+            <Route
+              path="allproducts"
+              element={
+                <AllProducts
+                  products={products}
+                  onAddToCart={handleAddToCart}
+                  isLoading={loading.cart}
+                />
+              }
+            />
+          </Route>
           <Route
             path="/admin"
-            element={<AdminRoute><AdminPage /></AdminRoute>}
-          />
+            element={
+              <AdminRoute>
+                <AdminLayout />
+              </AdminRoute>
+            }
+          >
+            <Route index element={<AdminDash />} />
+            <Route path="orders" element={<OrdersPage />} />
+            <Route path="products" element={<ProductsAdminPage />} />
+            <Route path="customers" element={<CustomersPage />} />
+          </Route>
         </Routes>
-
-        <footer className="bg-primary text-primary-foreground py-8">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p>
-              &copy; {new Date().getFullYear()} VF Clothes Shop™ All rights reserved. Built with care for the planet.
-            </p>
-          </div>
-        </footer>
 
         <CartSidebar
           isOpen={isCartOpen}
